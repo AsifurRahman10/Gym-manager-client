@@ -19,6 +19,7 @@ const router = createBrowserRouter([
       {
         path: "/allSchedule",
         element: <Schedule></Schedule>,
+        loader: () => fetch("https://gym-server-chi.vercel.app/schedules"),
       },
 
       {
@@ -28,6 +29,8 @@ const router = createBrowserRouter([
       {
         path: "/update/:id",
         element: <UpdateSchedule></UpdateSchedule>,
+        loader: ({ params }) =>
+          fetch(`https://gym-server-chi.vercel.app/schedule/${params.id}`),
       },
     ],
   },

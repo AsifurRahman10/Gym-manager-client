@@ -1,4 +1,27 @@
+import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
+import ScheduleTable from "../../components/SchedleTable";
+import Swal from "sweetalert2";
+
 const Schedule = () => {
+  const scheduleData = useLoaderData();
+  const [schedules, setSchedules] = useState(scheduleData);
+  const handleDelete = (_id) => {
+    console.log(_id);
+    fetch(`https://gym-server-chi.vercel.app/schedule/${_id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount > 0) {
+          Swal.fire("The schedule has been deleted");
+          const deletedData = schedules.filter(
+            (schedule) => schedule._id !== _id
+          );
+          setSchedules(deletedData);
+        }
+      });
+  };
   return (
     <>
       <div className="w-[400px] mx-auto mb-4">
@@ -25,7 +48,18 @@ const Schedule = () => {
                 <th>Auction</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {schedules.map((schedule, index) => (
+                <ScheduleTable
+                  setSchedules={setSchedules}
+                  scheduleData={scheduleData}
+                  key={schedule._id}
+                  schedule={schedule}
+                  idx={index}
+                  handleDelete={handleDelete}
+                ></ScheduleTable>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>

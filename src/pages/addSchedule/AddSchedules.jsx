@@ -2,6 +2,7 @@ import { useState } from "react";
 import "react-clock/dist/Clock.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Swal from "sweetalert2";
 
 const formatTime12Hour = (date) => {
   let hours = date.getHours();
@@ -27,6 +28,31 @@ const AddCoffee = () => {
     const formattedDate = startDate.toLocaleDateString("en-CA");
     const title = form.title.value;
     const day = form.day.value;
+
+    const scheduleData = {
+      formatHour,
+      formattedDate,
+      title,
+      day,
+    };
+
+    fetch("https://gym-server-chi.vercel.app/schedule", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(scheduleData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          Swal.fire({
+            title: "Schedule has been confirm",
+            text: "Please click ok to",
+            icon: "success",
+          });
+        }
+      });
   };
 
   return (
